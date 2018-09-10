@@ -13,25 +13,9 @@ Have fun!
 
 
 
-## Installation
+## Quickstart
 
-### General
-
-To use this bot, you first have to create your own [Discord Application](https://discordapp.com/developers/applications). If you don't know how to do it, [this wiki page](../../wiki/Setting-up-a-Discord-Application) will guide you through every step of the way.
-
-
-### Configuration
-
-Check `config/config.example.json` for an example configuration and create a new file `config.json` inside the `config` folder with your desired configuration. For a detailed description on all of the options, see [here](../../wiki/Configuration). Make sure to restart the bot whenever you change the configuration.
-
-To learn how to edit the config while the bot is running, see [below](#changing-the-config).
-
-
-### Building
-
-The bot can be installed via npm, manually or via Docker.
-
-#### Using npm
+Make sure to install **Node.js v8.0.0** or newer and **FFmpeg**.
 
 Install the bot as a dependency using npm.
 
@@ -51,7 +35,29 @@ const bot = new Bot({
 bot.start();
 ```
 
-For more configuration options see [here](../../wiki/Configuration).
+For more configuration options that you can pass to the bot, see [here](../../wiki/Configuration).
+
+See [here](../../wiki/Setting-up-a-Discord-Application) to get more information on how to obtain a `clientID` and a `token`.
+
+
+
+## Installation
+
+### General
+
+To use this bot, you first have to create your own [Discord Application](https://discordapp.com/developers/applications). If you don't know how to do it, [this wiki page](../../wiki/Setting-up-a-Discord-Application) will guide you through every step of the way.
+
+
+### Configuration
+
+Check `config/config.example.json` for an example configuration and create a new file `config.json` inside the `config` folder with your desired configuration. For a detailed description on all of the options, see [here](../../wiki/Configuration). Make sure to restart the bot whenever you change the configuration.
+
+To learn how to edit the config while the bot is running, see [below](#changing-the-config).
+
+
+### Building
+
+The bot can be installed manually or via Docker.
 
 #### Building manually
 
@@ -66,9 +72,10 @@ Need more details? You can find more detailed installation guides for [Unix](../
 
 *Note*: Using this method, the bot will lose all sounds when restarting because the Docker container has its own file system.
 
-+ Simply clone the repo and run `docker build -t soundbot .` inside the folder.
-+ Afterwards start the bot via `docker run soundbot`.
-+ To run the container in the background use `docker run -d soundbot`.
++ Clone the repository.
++ Run `docker build -t soundbot .` inside the folder.
++ Start the bot via `docker run soundbot`.
++ To run the docker container in the background use `docker run -d soundbot`.
 
 
 ### Adding the bot to your server
@@ -142,6 +149,7 @@ Use `!avatar` and attach an image to set the bot's avatar. You can remove the av
 The config can be changed by editing the `config.json` file, after which the bot needs to be restarted.
 
 To change the config on the go, use `!config <option> <value>`. This will change the configuration immediately and update the configuration file.
+
 
 
 ## Contributing
