@@ -8,6 +8,10 @@ src/
 
 config/config.json
 
+dist/lib/
+dist/src/main.js
+dist/tsconfig.json
+
 .gitignore
 db.json
 tsconfig.json
