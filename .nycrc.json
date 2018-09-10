@@ -1,0 +1,14 @@
+{
+  "include": [
+    "dist/src/**/*.js"
+  ],
+  "exclude": [
+    "dist/src/bot/**/*",
+    "dist/src/di/**/*"
+  ],
+  "reporter": [
+    "html"
+  ],
+  "report-dir": "./coverage",
+  "temp-directory": "./coverage/.nyc_output"
+}

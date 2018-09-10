@@ -4,11 +4,14 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "target": "es6",
-    "strict": true,
     "outDir": "dist",
     "lib": [
       "es2017"
     ],
+
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
 
     "baseUrl": ".",
     "paths": {

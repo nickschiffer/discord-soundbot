@@ -37,8 +37,11 @@
     "@types/fluent-ffmpeg": "^2.1.6",
     "@types/glob": "^5.0.35",
     "@types/i18n": "^0.8.3",
+    "@types/jasmine": "^2.8.8",
     "@types/lowdb": "^1.0.0",
     "@types/node": "^8.9.5",
+    "jasmine": "^3.2.0",
+    "nyc": "^13.0.1",
     "replace-in-file": "^3.4.2",
     "tslint": "^5.9.1",
     "typescript": "^3.0.1"
@@ -49,12 +52,14 @@
   "scripts": {
     "clean": "rm -rf dist",
     "compile": "tsc -p tsconfig.json",
+    "postcompile": "node dist/lib/postbuild.js",
     "build": "npm run compile",
     "lint": "tslint -p tsconfig.json",
-    "postcompile": "node dist/lib/postbuild.js",
     "serve": "node dist/src/main.js",
     "start": "npm run build && npm run serve",
+    "pretest": "tsc -p spec/tsconfig.test.json && npm run postcompile",
+    "test": "nyc jasmine --config=./spec/jasmine.json",
     "rebuild": "npm run clean && npm run build",
-    "release": "npm run rebuild && npm run lint"
+    "release": "npm run rebuild && npm run lint && npm run test && npm run rebuild"
   }
 }

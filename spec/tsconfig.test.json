@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "sourceMap": true,
+  "include": [
+    "../spec/**/*.spec.ts",
+    "../src/**/*",
+    "../lib/**/*",
+    "../types/*"
+  ]
+}
