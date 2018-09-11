@@ -1,10 +1,12 @@
 {
   "include": [
-    "dist/src/**/*.js"
+    "dist/src/**/*"
   ],
   "exclude": [
-    "dist/src/bot/**/*",
-    "dist/src/di/**/*"
+    "dist/src/bot/commands/**/*",
+    "dist/src/bot/*.js",
+    "dist/src/di/**/*",
+    "dist/src/discord/**/*"
   ],
   "reporter": [
     "html"
