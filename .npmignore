@@ -6,7 +6,9 @@ lib/
 sounds/
 src/
 
-config/config.json
+config/*
+!config/locales/
+!config/config.example.json
 
 dist/lib/
 dist/src/main.js
