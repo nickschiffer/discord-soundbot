@@ -50,6 +50,8 @@ To use this bot, you first have to create your own [Discord Application](https:/
 
 ### Configuration
 
+If you are using the npm package, you can just pass configuration options to the constructor. Otherwise, you need to create your own config file.
+
 Check `config/config.example.json` for an example configuration and create a new file `config.json` inside the `config` folder with your desired configuration. For a detailed description on all of the options, see [here](../../wiki/Configuration). Make sure to restart the bot whenever you change the configuration.
 
 To learn how to edit the config while the bot is running, see [below](#changing-the-config).
