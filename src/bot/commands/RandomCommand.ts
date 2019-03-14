@@ -7,6 +7,7 @@ import SoundQueue from '@queue/SoundQueue';
 import DatabaseAdapter from '@util/db/DatabaseAdapter';
 import SoundUtil from '@util/SoundUtil';
 import VoiceChannelFinder from './helpers/VoiceChannelFinder';
+import Config from '@config/Config';
 
 export default class RandomCommand implements Command {
   public readonly TRIGGERS = ['random'];
@@ -16,8 +17,10 @@ export default class RandomCommand implements Command {
   private readonly soundUtil: SoundUtil;
   private readonly queue: SoundQueue;
   private readonly voiceChannelFinder: VoiceChannelFinder;
+  private readonly config: Config;
 
-  constructor(soundUtil: SoundUtil, db: DatabaseAdapter, queue: SoundQueue, voiceChannelFinder: VoiceChannelFinder) {
+  constructor(config: Config, soundUtil: SoundUtil, db: DatabaseAdapter, queue: SoundQueue, voiceChannelFinder: VoiceChannelFinder) {
+    this.config = config;
     this.soundUtil = soundUtil;
     this.db = db;
     this.queue = queue;
@@ -26,7 +29,12 @@ export default class RandomCommand implements Command {
 
   public run(message: Message, params: string[]) {
     const voiceChannel = this.voiceChannelFinder.getVoiceChannelFromMessageAuthor(message);
-    if (!voiceChannel) return;
+    if (!voiceChannel){ 
+      if (this.config.deleteMessages){
+        message.delete();
+      }
+      return;
+    }
 
     let sounds!: string[];
     if (params.length === this.NUMBER_OF_PARAMETERS) {
@@ -37,5 +45,8 @@ export default class RandomCommand implements Command {
 
     const random = sounds[Math.floor(Math.random() * sounds.length)];
     this.queue.add(new QueueItem(random, voiceChannel, message));
+    if (this.config.deleteMessages){
+      message.delete();
+    }
   }
 }

@@ -5,19 +5,32 @@ import Command from './base/Command';
 import DatabaseAdapter from '@util/db/DatabaseAdapter';
 import Sound from '@util/db/models/Sound';
 
+import Config from '@config/Config';
+
 export default class MostPlayedCommand implements Command {
   public readonly TRIGGERS = ['mostplayed'];
   private db: DatabaseAdapter;
 
-  constructor(db: DatabaseAdapter) {
+  private readonly config: Config;
+
+  constructor(config: Config, db: DatabaseAdapter) {
+    this.config = config;
     this.db = db;
   }
 
   public run(message: Message) {
     const formattedMessage = this.getFormattedMessage();
-    if (!formattedMessage) return;
+    if (!formattedMessage){ 
+      if (this.config.deleteMessages){
+        message.delete();
+      }
+      return;
+    }
 
     message.channel.send(formattedMessage);
+    if (this.config.deleteMessages){
+      message.delete();
+    }
   }
 
   private getFormattedMessage() {

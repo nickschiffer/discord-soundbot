@@ -6,18 +6,26 @@ import Command from './base/Command';
 
 import SoundUtil from '@util/SoundUtil';
 
+import Config from '@config/Config';
+
 export default class LastAddedCommand implements Command {
   public readonly TRIGGERS = ['lastadded'];
   private readonly AMOUNT = 5;
 
   private readonly soundUtil: SoundUtil;
 
-  constructor(soundUtil: SoundUtil) {
+  private readonly config: Config;
+
+  constructor(config: Config, soundUtil: SoundUtil) {
+    this.config = config;
     this.soundUtil = soundUtil;
   }
 
   public run(message: Message) {
     message.channel.send(['```', ...this.getLastAddedSounds(), '```'].join('\n'));
+    if (this.config.deleteMessages){
+      message.delete();
+    }
   }
 
   private getLastAddedSounds() {

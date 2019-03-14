@@ -5,6 +5,7 @@ import Command from './base/Command';
 import DatabaseAdapter from '@util/db/DatabaseAdapter';
 import SoundUtil from '@util/SoundUtil';
 import MessageChunker from './helpers/MessageChunker';
+import Config from '@config/Config';
 
 export default class TagsCommand implements Command {
   public readonly TRIGGERS = ['tags'];
@@ -12,8 +13,10 @@ export default class TagsCommand implements Command {
   private readonly soundUtil: SoundUtil;
   private readonly db: DatabaseAdapter;
   private readonly chunker: MessageChunker;
+  private readonly config: Config;
 
-  constructor(soundUtil: SoundUtil, db: DatabaseAdapter, chunker: MessageChunker) {
+  constructor(config: Config, soundUtil: SoundUtil, db: DatabaseAdapter, chunker: MessageChunker) {
+    this.config = config;
     this.soundUtil = soundUtil;
     this.db = db;
     this.chunker = chunker;
@@ -27,6 +30,9 @@ export default class TagsCommand implements Command {
 
     this.chunker.chunkedMessages(soundsWithTags, page)
                 .forEach(chunk => message.author.send(chunk));
+    if (this.config.deleteMessages){
+      message.delete();
+    }
   }
 
   private formattedMessage(sounds: string[]) {

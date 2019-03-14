@@ -28,6 +28,9 @@ export default class ConfigCommand implements Command {
 
     if (params.length < this.NUMBER_OF_PARAMETERS) {
       message.channel.send(this.USAGE);
+      if (this.config.deleteMessages){
+        message.delete();
+      }
       return;
     }
 
@@ -35,12 +38,19 @@ export default class ConfigCommand implements Command {
 
     if (!this.config.has(field)) {
       message.channel.send(this.localeService.t('commands.config.notFound', { field }));
+      if (this.config.deleteMessages){
+        message.delete();
+      }
       return;
     }
 
     this.config.set(field, value);
     this.postProcess(field);
     message.channel.send(this.localeService.t('commands.config.success', { field, value }));
+    if (this.config.deleteMessages){
+      message.delete();
+    }
+
   }
 
   private postProcess(field: string) {

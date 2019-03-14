@@ -27,6 +27,9 @@ export default class SoundsCommand implements Command {
 
     if (!sounds.length) {
       message.author.send(this.localeService.t('commands.sounds.notFound', { prefix: this.config.prefix }));
+      if (this.config.deleteMessages){
+        message.delete();
+      }
       return;
     }
 
@@ -34,5 +37,8 @@ export default class SoundsCommand implements Command {
 
     this.chunker.chunkedMessages(sounds, page)
                 .forEach(chunk => message.author.send(chunk));
+    if (this.config.deleteMessages){
+      message.delete();
+    }
   }
 }

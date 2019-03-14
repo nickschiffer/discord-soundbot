@@ -17,5 +17,8 @@ export default class WelcomeCommand implements Command {
 
   public run(message: Message) {
     message.channel.send(this.localeService.t('welcome', { prefix: this.config.prefix }));
+    if (this.config.deleteMessages){
+      message.delete();
+    }
   }
 }

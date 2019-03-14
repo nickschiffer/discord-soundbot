@@ -20,6 +20,10 @@ export default class HelpCommand implements Command {
   public run(message: Message) {
     this.chunker.chunkedMessages(this.getFormattedListOfCommands())
       .forEach(chunk => message.author.send(chunk));
+      if (this.config.deleteMessages){
+        message.delete();
+      }
+  
   }
 
   private getFormattedListOfCommands() {
