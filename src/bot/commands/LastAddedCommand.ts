@@ -22,7 +22,7 @@ export default class LastAddedCommand implements Command {
   }
 
   public run(message: Message) {
-    message.channel.send(['```', ...this.getLastAddedSounds(), '```'].join('\n'));
+    message.author.send(['```', ...this.getLastAddedSounds(), '```'].join('\n'));
     if (this.config.deleteMessages){
       message.delete();
     }

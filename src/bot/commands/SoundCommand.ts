@@ -7,6 +7,7 @@ import SoundQueue from '@queue/SoundQueue';
 import SoundUtil from '@util/SoundUtil';
 import VoiceChannelFinder from './helpers/VoiceChannelFinder';
 import Config from '@config/Config';
+import HelpCommand from './HelpCommand';
 
 export default class SoundCommand implements Command {
   public readonly TRIGGERS = [];
@@ -25,15 +26,16 @@ export default class SoundCommand implements Command {
 
   public run(message: Message) {
     const sound = message.content;
-    if (!this.soundUtil.soundExists(sound)){ 
+    const voiceChannel = this.voiceChannelFinder.getVoiceChannelFromMessageAuthor(message);
+    if (!voiceChannel){
       if (this.config.deleteMessages){
         message.delete();
       }
       return;
     }
-
-    const voiceChannel = this.voiceChannelFinder.getVoiceChannelFromMessageAuthor(message);
-    if (!voiceChannel){ 
+    
+    if (!this.soundUtil.soundExists(sound)){
+      message.author.send(`sound not found, try ${this.config.prefix}sounds for a list of sounds.`); 
       if (this.config.deleteMessages){
         message.delete();
       }

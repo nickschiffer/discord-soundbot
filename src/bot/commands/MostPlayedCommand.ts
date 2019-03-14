@@ -27,7 +27,7 @@ export default class MostPlayedCommand implements Command {
       return;
     }
 
-    message.channel.send(formattedMessage);
+    message.author.send(formattedMessage);
     if (this.config.deleteMessages){
       message.delete();
     }
@@ -36,6 +36,7 @@ export default class MostPlayedCommand implements Command {
   private getFormattedMessage() {
     const sounds = this.db.sounds.mostPlayed();
     if (!sounds.length) return;
+    
 
     const longestSound = this.findLongestWord(sounds.map(sound => sound.name));
     const longestCount = this.findLongestWord(sounds.map(sound => String(sound.count)));

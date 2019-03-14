@@ -20,7 +20,7 @@ export default class DownloadCommand implements Command {
 
   public run(message: Message, params: string[]) {
     if (params.length !== this.NUMBER_OF_PARAMETERS) {
-      message.channel.send(this.USAGE);
+      message.author.send(this.USAGE);
       if (this.config.deleteMessages){
         message.delete();
       }
@@ -36,6 +36,6 @@ export default class DownloadCommand implements Command {
     }
 
     const attachment = new Attachment(this.soundUtil.getPathForSound(sound));
-    message.channel.send(attachment);
+    message.author.send(attachment);
   }
 }

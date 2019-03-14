@@ -32,7 +32,7 @@ export default class IgnoreCommand implements Command {
 
     this.userFinder.getUsersFromMentions(message, this.USAGE).forEach(user => {
       this.db.ignoreList.add(user.id);
-      message.channel.send(this.localeService.t('commands.ignore.add', { user: user.username }));
+      message.author.send(this.localeService.t('commands.ignore.add', { user: user.username }));
     });
     if (this.config.deleteMessages){
       message.delete();
