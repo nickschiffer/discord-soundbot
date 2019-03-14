@@ -11,7 +11,7 @@ export default class MostPlayedCommand implements Command {
     const formattedMessage = this.getFormattedMessage();
     if (!formattedMessage) return;
 
-    message.channel.send(formattedMessage);
+    message.author.send(formattedMessage);
   }
 
   private getFormattedMessage() {

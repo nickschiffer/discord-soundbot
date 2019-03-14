@@ -17,7 +17,10 @@ export default class SoundCommand implements Command {
 
   public run(message: Message) {
     const sound = message.content;
-    if (!existsSound(sound)) return;
+    if (!existsSound(sound)){
+      message.author.send(`sound not found, try [prefix]sounds for a list of sounds.`); 
+      return;
+    }
 
     const voiceChannel = getVoiceChannelFromAuthor(message);
     if (!voiceChannel) return;

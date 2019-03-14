@@ -14,7 +14,7 @@ export default class IgnoreCommand implements Command {
 
     getUsersFromMentions(message, this.USAGE).forEach(user => {
       ignoreList.add(user.id);
-      message.channel.send(localize.t('commands.ignore.add', { user: user.username }));
+      message.author.send(localize.t('commands.ignore.add', { user: user.username }));
     });
   }
 }

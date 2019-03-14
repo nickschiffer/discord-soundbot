@@ -24,20 +24,20 @@ export default class ConfigCommand implements Command {
     if (!message.member.hasPermission(Permissions.FLAGS.ADMINISTRATOR!)) return;
 
     if (params.length < this.NUMBER_OF_PARAMETERS) {
-      message.channel.send(this.USAGE);
+      message.author.send(this.USAGE);
       return;
     }
 
     const [field, ...value] = params;
 
     if (!this.config.has(field)) {
-      message.channel.send(localize.t('commands.config.notFound', { field }));
+      message.author.send(localize.t('commands.config.notFound', { field }));
       return;
     }
 
     this.config.set(field, value);
     this.postProcess(field);
-    message.channel.send(localize.t('commands.config.success', { field, value }));
+    message.author.send(localize.t('commands.config.success', { field, value }));
   }
 
   private postProcess(field: string) {

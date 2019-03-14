@@ -10,7 +10,7 @@ export default class LastAddedCommand implements Command {
   private readonly AMOUNT = 5;
 
   public run(message: Message) {
-    message.channel.send(['```', ...this.getLastAddedSounds(), '```'].join('\n'));
+    message.author.send(['```', ...this.getLastAddedSounds(), '```'].join('\n'));
   }
 
   private getLastAddedSounds() {
