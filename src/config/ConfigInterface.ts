@@ -6,6 +6,7 @@ export default interface ConfigInterface {
   language?: string;
   prefix?: string;
   acceptedExtensions?: string[];
+  ignoredRoles?: string[];
   maximumFileSize?: number;
   volume?: number;
   deleteMessages?: boolean;

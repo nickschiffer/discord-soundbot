@@ -22,6 +22,7 @@ export default class Config implements ConfigInterface {
     'language',
     'prefix',
     'acceptedExtensions',
+    'ignoredRoles',
     'maximumFileSize',
     'volume',
     'deleteMessages',
