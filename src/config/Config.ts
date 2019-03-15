@@ -11,6 +11,7 @@ export default class Config implements ConfigInterface {
   public language!: string;
   public prefix!: string;
   public acceptedExtensions!: string[];
+  public ignoredRoles!: string[];
   public maximumFileSize!: number;
   public volume!: number;
   public deleteMessages!: boolean;
@@ -20,7 +21,7 @@ export default class Config implements ConfigInterface {
 
   private readonly CONFIG_PATH = path.join(process.cwd(), 'config', 'config.json');
   private readonly MODIFIABLE_FIELDS = [
-    'language', 'prefix', 'acceptedExtensions', 'maximumFileSize',
+    'language', 'prefix', 'acceptedExtensions', 'ignoredRoles', 'maximumFileSize',
     'volume', 'deleteMessages', 'stayInChannel', 'deafen', 'game'
   ];
   private readonly JSON_KEYS = ['clientID', 'token', ...this.MODIFIABLE_FIELDS];
