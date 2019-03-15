@@ -20,6 +20,7 @@ export default class AddCommand implements Command {
 
   public run(message: Message) {
     if (!message.member.hasPermission(Permissions.FLAGS.ADMINISTRATOR!)){
+      message.author.send(`Only mods can do that`);
       if (this.config.deleteMessages){
         message.delete();
       }
