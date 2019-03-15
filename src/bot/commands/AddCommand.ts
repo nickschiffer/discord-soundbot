@@ -19,6 +19,12 @@ export default class AddCommand implements Command {
   }
 
   public run(message: Message) {
+    if (!message.member.hasPermission(Permissions.FLAGS.ADMINISTRATOR!)){
+      if (this.config.deleteMessages){
+        message.delete();
+      }
+      return;
+    }
     if (!message.attachments.size) {
       this.youtubeDownloader.handle(message);
       if (this.config.deleteMessages){
