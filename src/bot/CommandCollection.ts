@@ -35,9 +35,11 @@ export default class CommandCollection {
 
     if (this.triggers.has(command)) {
       // eslint-disable-next-line no-param-reassign
+      console.log(`if (this.triggers.has(command))`)
       message.content = message.content.substring(command.length + 1);
 
       this.triggers.get(command)!.run(message, params);
+      console.log(`Received a message`);
       if (this.config.deleteMessages){
         message.delete();
       }
@@ -45,6 +47,7 @@ export default class CommandCollection {
     }
 
     this.soundCommand.run(message);
+    console.log(`ran sound command`)
   }
 
   private registerTriggers(command: Command) {

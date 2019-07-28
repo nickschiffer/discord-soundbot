@@ -20,6 +20,8 @@ export default class MessageHandler {
     // eslint-disable-next-line no-param-reassign
     message.content = message.content.substring(this.config.prefix.length);
 
+    console.log(`Content: ${message.content}`)
+
     this.commands.execute(message);
   }
 
@@ -43,13 +45,11 @@ export default class MessageHandler {
       return false;
     }
 
-    if (this.db.ignoreList.exists(message.author.id)){
+    if (ignoreList.exists(message.author.id)){
       message.author.send(`Looks like you've been banned from using the bot.`);
       //message.delete();
       return false;
     }
-
-    //console.log(`ignored rules: ${this.config.ignoredRoles}`)
 
     if (this.config.ignoredRoles){
       if (message.member.roles.some(r=>this.config.ignoredRoles.includes(r.name))){
@@ -58,6 +58,8 @@ export default class MessageHandler {
         return false;
       }
     }
+
+    console.log(`Valid Message Received`)
 
     
 

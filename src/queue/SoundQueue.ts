@@ -73,6 +73,7 @@ export default class SoundQueue {
   }
 
   private playSound(connection: VoiceConnection, name: string): Promise<VoiceConnection> {
+    console.log(`playing sound`)
     return new Promise(resolve =>
       connection.playFile(name, { volume: this.config.volume })
                 .on('end', () => resolve(connection)));
@@ -82,7 +83,7 @@ export default class SoundQueue {
     const { name, channel, message, count } = this.currentSound!;
 
     sounds.incrementCount(name);
-    //this.deleteCurrentMessage();
+    this.deleteCurrentMessage();
 
     if (count - 1 > 0) {
       this.add(new QueueItem(name, channel, message, count - 1));
