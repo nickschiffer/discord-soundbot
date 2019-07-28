@@ -12,3 +12,5 @@ sounds/*
 !sounds/.keep
 
 db.json
+package-lock.json
+bot.yml
