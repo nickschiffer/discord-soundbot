@@ -73,7 +73,6 @@ export default class SoundQueue {
   }
 
   private playSound(connection: VoiceConnection, name: string): Promise<VoiceConnection> {
-    console.log(`playing sound`)
     return new Promise(resolve =>
       connection.playFile(name, { volume: this.config.volume })
                 .on('end', () => resolve(connection)));
