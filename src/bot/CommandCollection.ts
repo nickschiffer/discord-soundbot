@@ -3,16 +3,19 @@ import { ClientUser, Message } from 'discord.js';
 import Command from './commands/base/Command';
 import UserCommand from './commands/base/UserCommand';
 import SoundCommand from './commands/SoundCommand';
+import Config from '@config/Config';
 
 export default class CommandCollection {
   private readonly triggers: Map<string, Command>;
   private readonly commands: Command[];
   private readonly soundCommand: SoundCommand;
+  private readonly config: Config;
 
-  constructor(commands: Command[]) {
+  constructor(commands: Command[], config: Config) {
     this.triggers = new Map();
     this.commands = [];
     this.soundCommand = commands.find(command => !command.TRIGGERS.length)! as SoundCommand;
+    this.config = config;
 
     this.registerCommands(commands);
   }
@@ -35,6 +38,9 @@ export default class CommandCollection {
       message.content = message.content.substring(command.length + 1);
 
       this.triggers.get(command)!.run(message, params);
+      if (this.config.deleteMessages){
+        message.delete();
+      }
       return;
     }
 
