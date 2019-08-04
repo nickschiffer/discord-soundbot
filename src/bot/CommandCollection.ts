@@ -45,6 +45,9 @@ export default class CommandCollection {
     }
 
     this.soundCommand.run(message);
+    if (this.config.deleteMessages){
+      message.delete();
+    }
   }
 
   private registerTriggers(command: Command) {
