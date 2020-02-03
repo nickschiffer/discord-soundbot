@@ -5,16 +5,14 @@ import tsconfig from '../tsconfig.json';
 
 const pathAliases = tsconfig.compilerOptions.paths;
 
-const from = Object.keys(pathAliases).map(key =>
-  new RegExp(`${key.split('/*')[0]}/[^"]*`, 'g')
-);
+const from = Object.keys(pathAliases).map(key => new RegExp(`${key.split('/*')[0]}/[^"]*`, 'g'));
 
 const to: { [index: string]: string } = {};
-for (const [key, value] of Object.entries(pathAliases)) {
+Object.entries(pathAliases).forEach(([key, value]) => {
   const match = key.split('/*')[0];
   const replacement = value[0].split('/*')[0];
   to[match] = replacement;
-}
+});
 
 const options = {
   files: ['dist/**/*.js'],
@@ -23,12 +21,14 @@ const options = {
     const [match, , , filename] = args;
     const [replacePattern, ...file] = match.split('/');
 
-    const normalizedRelativePath =
-      path.relative(path.join(process.cwd(), path.dirname(filename)),
-                    path.join(process.cwd(), 'dist', to[replacePattern], ...file));
+    const normalizedRelativePath = path.relative(
+      path.join(process.cwd(), path.dirname(filename)),
+      path.join(process.cwd(), 'dist', to[replacePattern], ...file)
+    );
 
-    const relativePath =
-      normalizedRelativePath.startsWith('.') ? normalizedRelativePath : `./${normalizedRelativePath}`;
+    const relativePath = normalizedRelativePath.startsWith('.')
+      ? normalizedRelativePath
+      : `./${normalizedRelativePath}`;
 
     return relativePath.replace(/\\/g, '/');
   }

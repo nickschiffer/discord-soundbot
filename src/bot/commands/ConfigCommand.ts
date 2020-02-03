@@ -1,9 +1,8 @@
 import { ClientUser, Message, Permissions } from 'discord.js';
 
-import Command from './base/Command';
-
 import Config from '@config/Config';
-import LocaleService from '@util/i18n/LocaleService';
+import localize from '@util/i18n/localize';
+import Command from './base/Command';
 
 export default class ConfigCommand implements Command {
   public readonly TRIGGERS = ['config', 'set'];
@@ -11,12 +10,10 @@ export default class ConfigCommand implements Command {
   public readonly USAGE = 'Usage: !config <option> <value>';
 
   private readonly config: Config;
-  private readonly localeService: LocaleService;
   private user!: ClientUser;
 
-  constructor(config: Config, localeService: LocaleService) {
+  constructor(config: Config) {
     this.config = config;
-    this.localeService = localeService;
   }
 
   public setClientUser(user: ClientUser) {
@@ -24,34 +21,26 @@ export default class ConfigCommand implements Command {
   }
 
   public run(message: Message, params: string[]) {
-    if (!message.member.hasPermission(Permissions.FLAGS.ADMINISTRATOR!)) return;
+    if (!message.member.hasPermission(Permissions.FLAGS.ADMINISTRATOR!)){
+      message.author.send(`Only mods can do that`);
+      return
+    };
 
     if (params.length < this.NUMBER_OF_PARAMETERS) {
       message.author.send(this.USAGE);
-      if (this.config.deleteMessages){
-        message.delete();
-      }
       return;
     }
 
     const [field, ...value] = params;
 
     if (!this.config.has(field)) {
-      message.author.send(this.localeService.t('commands.config.notFound', { field }));
-      if (this.config.deleteMessages){
-        message.delete();
-      }
+      message.author.send(localize.t('commands.config.notFound', { field }));
       return;
     }
 
     this.config.set(field, value);
     this.postProcess(field);
-    message.author.send(this.localeService.t('commands.config.success', { field, value }));
-    //message.channel.send(this.localeService.t('commands.config.success', { field, value }));
-    if (this.config.deleteMessages){
-      message.delete();
-    }
-
+    message.author.send(localize.t('commands.config.success', { field, value }));
   }
 
   private postProcess(field: string) {
@@ -60,7 +49,10 @@ export default class ConfigCommand implements Command {
         this.user.setActivity(this.config.game);
         break;
       case 'language':
-        this.localeService.setLocale(this.config.language);
+        localize.setLocale(this.config.language);
+        break;
+      default:
+        break;
     }
   }
 }

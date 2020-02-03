@@ -11,10 +11,15 @@ export default class CommandCollection {
 
   constructor(commands: Command[]) {
     this.triggers = new Map();
-    this.commands = commands;
-    this.soundCommand = commands.find(command => !command.TRIGGERS.length)! as SoundCommand;
+    this.commands = [];
+    this.soundCommand = commands.find(command => !command.TRIGGERS.length) as SoundCommand;
 
     this.registerCommands(commands);
+  }
+
+  public registerCommands(commands: Command[]) {
+    this.commands.push(...commands);
+    commands.forEach(command => this.registerTriggers(command));
   }
 
   public registerUserCommands(user: ClientUser) {
@@ -22,18 +27,18 @@ export default class CommandCollection {
     (userCommands as UserCommand[]).forEach(command => command.setClientUser(user));
   }
 
-  public execute(command: string, params: string[], message: Message) {
+  public execute(message: Message) {
+    const [command, ...params] = message.content.split(' ');
+
     if (this.triggers.has(command)) {
-      message.content = message.content.substring(command.length + 1);
+      const messageToRun = message;
+      messageToRun.content = message.content.substring(command.length + 1);
+
       this.triggers.get(command)!.run(message, params);
       return;
     }
 
     this.soundCommand.run(message);
-  }
-
-  public registerCommands(commands: Command[]) {
-    commands.forEach(command => this.registerTriggers(command));
   }
 
   private registerTriggers(command: Command) {

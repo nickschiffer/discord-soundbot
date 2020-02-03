@@ -43,7 +43,7 @@
 
   "helpers": {
     "messageChunker": {
-      "page": "```Page {current} de {amount}```"
+      "page": "```Page {current} de {total}```"
     },
     "userFinder": {
       "error": "Utilisateur introuvable sur ce serveur."
@@ -78,8 +78,8 @@
       "url": "Avatar en place: {url}"
     },
     "ignore": {
-      "ignore": "L'utilisateur {user} est maintenant ignoré !",
-      "unignore": "L'utilisateur {user} n'est plus ignoré !"
+      "add": "L'utilisateur {user} est maintenant ignoré !",
+      "remove": "L'utilisateur {user} n'est plus ignoré !"
     },
     "remove": {
       "notFound": "{sound} introuvable !",

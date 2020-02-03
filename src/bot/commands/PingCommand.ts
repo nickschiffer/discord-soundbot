@@ -6,6 +6,6 @@ export default class PingCommand implements Command {
   public readonly TRIGGERS = ['ping'];
 
   public run(message: Message) {
-    message.channel.send('Pong!');
+    message.author.send('Pong!');
   }
 }

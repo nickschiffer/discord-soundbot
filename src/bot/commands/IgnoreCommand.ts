@@ -1,41 +1,26 @@
 import { Message, Permissions } from 'discord.js';
 
+import * as ignoreList from '@util/db/IgnoreList';
+import localize from '@util/i18n/localize';
 import Command from './base/Command';
-
-import DatabaseAdapter from '@util/db/DatabaseAdapter';
-import LocaleService from '@util/i18n/LocaleService';
-import UserFinder from './helpers/UserFinder';
-import Config from '@config/Config';
 
 export default class IgnoreCommand implements Command {
   public readonly TRIGGERS = ['ignore'];
   public readonly USAGE = 'Usage: !ignore <user>';
-  private readonly localeService: LocaleService;
-  private readonly db: DatabaseAdapter;
-  private readonly userFinder: UserFinder;
-  private readonly config: Config;
-
-  constructor(config: Config, localeService: LocaleService, db: DatabaseAdapter, userFinder: UserFinder) {
-    this.config = config;
-    this.localeService = localeService;
-    this.db = db;
-    this.userFinder = userFinder;
-  }
 
   public run(message: Message) {
-    if (!message.member.hasPermission(Permissions.FLAGS.ADMINISTRATOR!)){ 
-      if (this.config.deleteMessages){
-        message.delete();
-      }
+    if (!message.member.hasPermission(Permissions.FLAGS.ADMINISTRATOR!)) return;
+
+    const { users } = message.mentions;
+    if (users.size < 1) {
+      message.channel.send(this.USAGE);
+      message.channel.send(localize.t('helpers.userFinder.error'));
       return;
     }
 
-    this.userFinder.getUsersFromMentions(message, this.USAGE).forEach(user => {
-      this.db.ignoreList.add(user.id);
-      message.author.send(this.localeService.t('commands.ignore.add', { user: user.username }));
+    users.forEach(user => {
+      ignoreList.add(user.id);
+      message.channel.send(localize.t('commands.ignore.add', { user: user.username }));
     });
-    if (this.config.deleteMessages){
-      message.delete();
-    }
   }
 }

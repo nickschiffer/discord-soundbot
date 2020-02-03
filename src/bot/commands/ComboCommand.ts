@@ -1,61 +1,41 @@
-import { Message, VoiceChannel } from 'discord.js';
-
-import Command from './base/Command';
+import { Message } from 'discord.js';
 
 import QueueItem from '@queue/QueueItem';
 import SoundQueue from '@queue/SoundQueue';
-import SoundUtil from '@util/SoundUtil';
-import VoiceChannelFinder from './helpers/VoiceChannelFinder';
-import Config from '@config/Config';
+import localize from '@util/i18n/localize';
+import { getSounds } from '@util/SoundUtil';
+import Command from './base/Command';
 
 export default class ComboCommand implements Command {
   public readonly TRIGGERS = ['combo'];
   public readonly NUMBER_OF_PARAMETERS = 1;
   public readonly USAGE = 'Usage: !combo <sound1> ... <soundN>';
-  public readonly config: Config;
 
-  private readonly soundUtil: SoundUtil;
   private readonly queue: SoundQueue;
-  private readonly voiceChannelFinder: VoiceChannelFinder;
-  private sounds!: string[];
 
-  constructor(config: Config, soundUtil: SoundUtil, queue: SoundQueue, voiceChannelFinder: VoiceChannelFinder) {
-    this.config = config;
-    this.soundUtil = soundUtil;
+  constructor(queue: SoundQueue) {
     this.queue = queue;
-    this.voiceChannelFinder = voiceChannelFinder;
   }
 
   public run(message: Message, params: string[]) {
     if (params.length < this.NUMBER_OF_PARAMETERS) {
       message.author.send(this.USAGE);
-      if (this.config.deleteMessages){
-        message.delete();
-      }
       return;
     }
 
-    const voiceChannel = this.voiceChannelFinder.getVoiceChannelFromMessageAuthor(message);
-    if (!voiceChannel){ 
-      if (this.config.deleteMessages){
-        message.delete();
-      }  
+    const { voiceChannel } = message.member;
+    if (!voiceChannel) {
+      message.reply(localize.t('helpers.voiceChannelFinder.error'));
       return;
     }
 
-    this.sounds = this.soundUtil.getSounds();
-    this.addSoundsToQueue(params, voiceChannel, message);
-    if (this.config.deleteMessages){
-      message.delete();
-    }
-  }
+    const sounds = getSounds();
 
-  private addSoundsToQueue(sounds: string[], voiceChannel: VoiceChannel, message: Message) {
-    sounds.forEach(sound => this.addSoundToQueue(sound, voiceChannel, message));
-  }
+    params.forEach(sound => {
+      if (!sounds.includes(sound)) return;
 
-  private addSoundToQueue(sound: string, voiceChannel: VoiceChannel, message: Message) {
-    if (!this.sounds.includes(sound)) return;
-    this.queue.add(new QueueItem(sound, voiceChannel, message));
+      const item = new QueueItem(sound, voiceChannel, message);
+      this.queue.add(item);
+    });
   }
 }

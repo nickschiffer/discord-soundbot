@@ -20,6 +20,11 @@
       "stop": "Ferma la riproduzione e pulisce la coda"
     },
 
+    "entrance": {
+      "set": "Imposta un suono di entrata",
+      "remove": "Rimuove il suono di entrata"
+    },
+
     "tags": {
       "all": "Lista dei suoni con i relativi tag",
       "add": "Aggiungi un tag al suono",
@@ -38,7 +43,7 @@
 
   "helpers": {
     "messageChunker": {
-      "page": "```Pagina {current} di {amount}```"
+      "page": "```Pagina {current} di {total}```"
     },
     "userFinder": {
       "error": "Utente non trovato su questo server."
@@ -73,8 +78,8 @@
       "url": "Avatar corrente: {url}"
     },
     "ignore": {
-      "ignore": "Sto ignorando {user}!",
-      "unignore": "Non sto piu' ignorando {user}!"
+      "add": "Sto ignorando {user}!",
+      "remove": "Non sto piu' ignorando {user}!"
     },
     "remove": {
       "notFound": "{sound} non trovato!",

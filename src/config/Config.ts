@@ -1,12 +1,12 @@
-import exampleConfig from '../../config/config.example.json';
-
 import fs from 'fs';
 import path from 'path';
+import camelCase from 'lodash/camelCase';
 
 import ConfigInterface from './ConfigInterface';
+import DEFAULT_CONFIG from './DefaultConfig';
 
 export default class Config implements ConfigInterface {
-  public clientID!: string;
+  public clientId!: string;
   public token!: string;
   public language!: string;
   public prefix!: string;
@@ -21,10 +21,19 @@ export default class Config implements ConfigInterface {
 
   private readonly CONFIG_PATH = path.join(process.cwd(), 'config', 'config.json');
   private readonly MODIFIABLE_FIELDS = [
-    'language', 'prefix', 'acceptedExtensions', 'ignoredRoles', 'maximumFileSize',
-    'volume', 'deleteMessages', 'stayInChannel', 'deafen', 'game'
+    'language',
+    'prefix',
+    'acceptedExtensions',
+    'ignoredRoles',
+    'maximumFileSize',
+    'volume',
+    'deleteMessages',
+    'stayInChannel',
+    'deafen',
+    'game'
   ];
-  private readonly JSON_KEYS = ['clientID', 'token', ...this.MODIFIABLE_FIELDS];
+
+  private readonly JSON_KEYS = ['clientId', 'token', ...this.MODIFIABLE_FIELDS];
 
   [index: string]: any;
 
@@ -37,52 +46,65 @@ export default class Config implements ConfigInterface {
   }
 
   public set(field: string, value: string[]) {
-    if (!this.has(field)) return;
+    if (!this.JSON_KEYS.includes(field)) return;
 
     switch (typeof this[field]) {
       case 'string':
+        // eslint-disable-next-line prefer-destructuring
         this[field] = value[0];
         break;
       case 'number':
         this[field] = parseFloat(value[0]);
         break;
       case 'boolean':
-        this[field] = value[0] === 'true';
+        this[field] = value[0].toLowerCase() === 'true';
         break;
       case 'object':
         this[field] = value;
+        break;
+      default:
+        break;
     }
 
     this.writeToConfig();
   }
 
   public setFrom(data: ConfigInterface) {
-    Object.keys(data).forEach(field => this[field] = data[field]);
+    Object.keys(data).forEach(field => {
+      this[field] = data[field];
+    });
   }
 
   private initialize() {
-    if (!fs.existsSync(this.CONFIG_PATH)) {
-      this.initializeWithExampleConfig();
-      return;
+    this.initializeDefaultConfig();
+    if (fs.existsSync(this.CONFIG_PATH)) {
+      this.initializeWithSavedConfig();
     }
 
-    this.initializeWithSavedConfig();
+    this.initializeFromEnvironmentVariables();
   }
 
-  private initializeWithExampleConfig() {
-    this.ensureConfigDirectoryExists();
-    this.setFrom(exampleConfig);
+  private initializeDefaultConfig() {
+    this.setFrom(DEFAULT_CONFIG);
   }
 
   private initializeWithSavedConfig() {
+    // eslint-disable-next-line
     const savedConfig = require(this.CONFIG_PATH);
     this.setFrom(savedConfig);
   }
 
-  private ensureConfigDirectoryExists() {
-    if (!fs.existsSync(path.dirname(this.CONFIG_PATH))) {
-      fs.mkdirSync(path.dirname(this.CONFIG_PATH));
-    }
+  private initializeFromEnvironmentVariables() {
+    Object.keys(process.env)
+      .filter(envKey => this.JSON_KEYS.includes(camelCase(envKey)))
+      .forEach(envKey => {
+        let envValue = [process.env[envKey]!];
+        if (envKey === 'ACCEPTED_EXTENSIONS') {
+          envValue = envValue[0].split(',');
+        }
+
+        this.set(camelCase(envKey), envValue);
+      });
   }
 
   private writeToConfig() {
