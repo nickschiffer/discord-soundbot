@@ -34,8 +34,9 @@ The bot can be installed manually, via Docker, or as an npm package. When not us
 #### Building manually
 
 + Clone the repository.
-+ Install the bot's dependencies with `npm install`.
-+ Run the bot with `npm start`.
++ Install `yarn` with `npm install -g yarn`.
++ Install the bot's dependencies with `yarn install`.
++ Run the bot with `yarn start`.
 
 Need more details? You can find more detailed installation guides for [Unix](../../wiki/Unix) (including your Raspberry Pi), [macOS](../../wiki/macOS), and [Windows](../../wiki/Windows).
 
@@ -61,13 +62,13 @@ Start the bot.
 const SoundBot = require('discord-soundbot');
 
 const myBot = new SoundBot({
-  clientID: 'YOUR_CLIENT_ID',
+  clientId: 'YOUR_CLIENT_ID',
   token: 'YOUR_BOT_USER_TOKEN'
 });
 myBot.start();
 ```
 
-For more configuration options see [here](../../wiki/Configuration).
+For more configuration options see [here](../../wiki/Configuration). You can also add additional commands using this method, see [here](../../wiki/Commands).
 
 
 ### Adding the bot to your server
@@ -81,6 +82,7 @@ https://discordapp.com/oauth2/authorize?client_id={YOUR_CLIENT_ID}&scope=bot
 
 Follow the link and allow the bot to join your Discord server.
 
+Try out the sample sounds `!airhorn` and `!johncena`, or see below to learn how to add your own sounds.
 
 
 ## Commands
@@ -96,7 +98,7 @@ You can add, rename, download, tag, play, and remove sounds, ignore users, set t
 
 You can add sounds to the bot by typing `!add` and attaching a file. Accepted file formats and a limit to the size are configurable. The name of the sound can only contain alphanumeric characters.
 
-You can instead also add a sound from YouTube with `!add <name> <link>`. A range in decimals can be specified with `!add <name> <link> <start> <end>`.
+You can instead also add a sound from YouTube with `!add <name> <link>`. A range in decimals can be specified with `!add <name> <link> <start> <duration>` where the duration is optional. Both the start time and the duration have to be specified as timestamp strings with the format [[hh:]mm:]ss[.xxx].
 
 ### Playing sounds
 
@@ -106,9 +108,15 @@ All sounds will be added to a queue and played in succession. To halt the playba
 
 You can use `!combo <sound1> ... <soundN>` to add multiple sounds to the queue.
 
+You can loop sounds by using `!loop <sound>`. To loop only a couple of times, use `!loop <sound> <times>`
+
+You can skip the current sound with the `!skip` command. To interrupt the currently playing sound with a new one use `!next <sound>`.
+
 ### Setting entrance sounds
 
 Every user can set his own entrance sound, a sound that will play whenever the user joins a voice channel by using `!entrance <sound>`. To remove your entrance sound use `!entrance` without specifying a sound.
+
+The same is possible for exit sounds with `!exit <sound>` which will play the specified sound when leaving a voice channel.
 
 ### Tagging and searching sounds
 
@@ -147,9 +155,10 @@ The config can be changed by editing the `config.json` file, after which the bot
 To change the config on the go, use `!config <option> <value>`. This will change the configuration immediately and update the configuration file.
 
 
+
 ## Contributing
 
-This bot is a dear passion project of mine. If you have any suggestions for new features or improvements, feel free to open an issue or talk to me on Discord. I'll be glad to look into it!
+This bot is a dear passion project of mine. If you encounter any bugs, or have any suggestions for new features or improvements, feel free to open an issue or talk to me on Discord. I'll be glad to look into it!
 
 In particular, thanks to these splendid lads for providing localization:
 

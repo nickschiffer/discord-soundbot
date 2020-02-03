@@ -1,38 +1,19 @@
 import { Message } from 'discord.js';
 
+import * as soundsDb from '@util/db/Sounds';
+import { getSounds } from '@util/SoundUtil';
 import Command from './base/Command';
-
-import DatabaseAdapter from '@util/db/DatabaseAdapter';
-import SoundUtil from '@util/SoundUtil';
-import MessageChunker from './helpers/MessageChunker';
-import Config from '@config/Config';
+import chunkedMessages from './helpers/chunkedMessages';
 
 export default class TagsCommand implements Command {
   public readonly TRIGGERS = ['tags'];
 
-  private readonly soundUtil: SoundUtil;
-  private readonly db: DatabaseAdapter;
-  private readonly chunker: MessageChunker;
-  private readonly config: Config;
-
-  constructor(config: Config, soundUtil: SoundUtil, db: DatabaseAdapter, chunker: MessageChunker) {
-    this.config = config;
-    this.soundUtil = soundUtil;
-    this.db = db;
-    this.chunker = chunker;
-  }
-
   public run(message: Message, params: string[]) {
-    const sounds = this.soundUtil.getSounds();
+    const sounds = getSounds();
     const soundsWithTags = this.formattedMessage(sounds);
 
     const page = parseInt(params[0]);
-
-    this.chunker.chunkedMessages(soundsWithTags, page)
-                .forEach(chunk => message.author.send(chunk));
-    if (this.config.deleteMessages){
-      message.delete();
-    }
+    chunkedMessages(soundsWithTags, page).forEach(chunk => message.author.send(chunk));
   }
 
   private formattedMessage(sounds: string[]) {
@@ -41,7 +22,7 @@ export default class TagsCommand implements Command {
   }
 
   private listSoundWithTags(sound: string, soundLength: number) {
-    const tags = this.db.sounds.listTags(sound);
+    const tags = soundsDb.listTags(sound);
     if (!tags.length) return sound;
 
     const spacesForSound = ' '.repeat(soundLength - sound.length + 1);
@@ -49,6 +30,6 @@ export default class TagsCommand implements Command {
   }
 
   private findLongestWord(array: string[]) {
-    return array.reduce((a, b) => a.length > b.length ? a : b);
+    return array.reduce((a, b) => (a.length > b.length ? a : b));
   }
 }

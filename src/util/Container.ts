@@ -4,10 +4,7 @@ import path from 'path';
 
 import Config from '@config/Config';
 import SoundQueue from '@queue/SoundQueue';
-import DatabaseAdapter from '@util/db/DatabaseAdapter';
-import i18n from '@util/i18n/i18n';
-import LocaleService from '@util/i18n/LocaleService';
-import SoundUtil from '@util/SoundUtil';
+import SoundBot from '../bot/SoundBot';
 import CommandCollection from '../bot/CommandCollection';
 
 const container = awilix.createContainer({
@@ -16,18 +13,10 @@ const container = awilix.createContainer({
 
 container.register({
   config: awilix.asClass(Config).singleton(),
-
-  i18nProvider: awilix.asValue(i18n),
-  localeService: awilix.asClass(LocaleService).singleton(),
-
-  db: awilix.asClass(DatabaseAdapter).singleton(),
-  queue: awilix.asClass(SoundQueue).singleton(),
-  soundUtil: awilix.asClass(SoundUtil).singleton()
+  queue: awilix.asClass(SoundQueue).singleton()
 });
 
-container.loadModules([
-  'bot/**/*.js'
-], {
+container.loadModules(['bot/**/*.js'], {
   cwd: path.join(__dirname, '..'),
   formatName: 'camelCase',
   resolverOptions: {
@@ -37,39 +26,50 @@ container.loadModules([
 });
 
 container.register({
-  chunker: awilix.aliasTo('messageChunker'),
-  commands: awilix.asClass(CommandCollection).singleton().inject(() => ({
-    commands: [
-      container.cradle.pingCommand,
+  commands: awilix
+    .asClass(CommandCollection)
+    .singleton()
+    .inject(() => ({
+      commands: [
+        container.cradle.pingCommand,
 
-      container.cradle.addCommand,
-      container.cradle.renameCommand,
-      container.cradle.removeCommand,
+        container.cradle.addCommand,
+        container.cradle.renameCommand,
+        container.cradle.removeCommand,
 
-      container.cradle.soundCommand,
-      container.cradle.comboCommand,
-      container.cradle.randomCommand,
-      container.cradle.stopCommand,
+        container.cradle.soundCommand,
+        container.cradle.comboCommand,
+        container.cradle.randomCommand,
+        container.cradle.loopCommand,
+        container.cradle.nextCommand,
+        container.cradle.skipCommand,
+        container.cradle.stopCommand,
 
-      container.cradle.entranceCommand,
+        container.cradle.entranceCommand,
+        container.cradle.exitCommand,
 
-      container.cradle.soundsCommand,
-      container.cradle.searchCommand,
-      container.cradle.tagCommand,
-      container.cradle.tagsCommand,
-      container.cradle.downloadCommand,
+        container.cradle.soundsCommand,
+        container.cradle.searchCommand,
+        container.cradle.tagCommand,
+        container.cradle.tagsCommand,
+        container.cradle.downloadCommand,
 
-      container.cradle.welcomeCommand,
-      container.cradle.helpCommand,
-      container.cradle.lastAddedCommand,
-      container.cradle.mostPlayedCommand,
-      container.cradle.ignoreCommand,
-      container.cradle.unignoreCommand,
+        container.cradle.welcomeCommand,
+        container.cradle.helpCommand,
+        container.cradle.lastAddedCommand,
+        container.cradle.mostPlayedCommand,
+        container.cradle.ignoreCommand,
+        container.cradle.unignoreCommand,
 
-      container.cradle.avatarCommand,
-      container.cradle.configCommand
-    ]
-  }))
+        container.cradle.avatarCommand,
+        container.cradle.configCommand
+      ]
+    }))
 });
 
-export default container;
+interface SoundBotContainer {
+  config: Config;
+  soundBot: SoundBot;
+}
+
+export default container.cradle as SoundBotContainer;

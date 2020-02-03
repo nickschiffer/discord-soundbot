@@ -15,11 +15,17 @@
       "@config/*": ["src/config/*"],
       "@queue/*": ["src/queue/*"],
       "@util/*": ["src/util/*"]
-    }
+    },
+    "incremental": true
   },
   "include": [
     "src/**/*",
     "bin/**/*",
     "lib/**/*"
+  ],
+
+  "exclude": [
+    "**/__jest__",
+    "**/__mocks__"
   ]
 }

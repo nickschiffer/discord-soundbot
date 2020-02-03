@@ -1,42 +1,22 @@
 import { Message } from 'discord.js';
 
-import Command from './base/Command';
-
-import DatabaseAdapter from '@util/db/DatabaseAdapter';
 import Sound from '@util/db/models/Sound';
-
-import Config from '@config/Config';
+import * as soundsDb from '@util/db/Sounds';
+import Command from './base/Command';
 
 export default class MostPlayedCommand implements Command {
   public readonly TRIGGERS = ['mostplayed'];
-  private db: DatabaseAdapter;
-
-  private readonly config: Config;
-
-  constructor(config: Config, db: DatabaseAdapter) {
-    this.config = config;
-    this.db = db;
-  }
 
   public run(message: Message) {
     const formattedMessage = this.getFormattedMessage();
-    if (!formattedMessage){ 
-      if (this.config.deleteMessages){
-        message.delete();
-      }
-      return;
-    }
+    if (!formattedMessage) return;
 
-    message.author.send(formattedMessage);
-    if (this.config.deleteMessages){
-      message.delete();
-    }
+    message.channel.send(formattedMessage);
   }
 
   private getFormattedMessage() {
-    const sounds = this.db.sounds.mostPlayed();
-    if (!sounds.length) return;
-    
+    const sounds = soundsDb.mostPlayed();
+    if (!sounds.length) return undefined;
 
     const longestSound = this.findLongestWord(sounds.map(sound => sound.name));
     const longestCount = this.findLongestWord(sounds.map(sound => String(sound.count)));
@@ -44,7 +24,7 @@ export default class MostPlayedCommand implements Command {
   }
 
   private findLongestWord(array: string[]) {
-    return array.reduce((a, b) => a.length > b.length ? a : b);
+    return array.reduce((a, b) => (a.length > b.length ? a : b));
   }
 
   private formatSounds(sounds: Sound[], soundLength: number, countLength: number) {

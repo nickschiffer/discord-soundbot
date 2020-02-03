@@ -1,9 +1,8 @@
 import { ClientUser, Message, Permissions } from 'discord.js';
 
-import UserCommand from './base/UserCommand';
-
 import Config from '@config/Config';
-import LocaleService from '@util/i18n/LocaleService';
+import localize from '@util/i18n/localize';
+import UserCommand from './base/UserCommand';
 
 export default class AvatarCommand implements UserCommand {
   public readonly TRIGGERS = ['avatar'];
@@ -11,12 +10,10 @@ export default class AvatarCommand implements UserCommand {
   public readonly USAGE = 'Usage: !avatar [remove]';
 
   private readonly config: Config;
-  private readonly localeService: LocaleService;
   private user!: ClientUser;
 
-  constructor(config: Config, localeService: LocaleService) {
+  constructor(config: Config) {
     this.config = config;
-    this.localeService = localeService;
   }
 
   public setClientUser(user: ClientUser) {
@@ -24,57 +21,39 @@ export default class AvatarCommand implements UserCommand {
   }
 
   public run(message: Message, params: string[]) {
-    if (!message.member.hasPermission(Permissions.FLAGS.ADMINISTRATOR!)){
-      if (this.config.deleteMessages){
-        message.delete();
-      }
+    if (!message.member.hasPermission(Permissions.FLAGS.ADMINISTRATOR!)) { 
+      message.author.send(`Only mods can do that`);
       return;
     }
 
     if (params.length === this.NUMBER_OF_PARAMETERS && params[0] === 'remove') {
       this.user.setAvatar('');
-      if (this.config.deleteMessages){
-        message.delete();
-      }
       return;
     }
 
     if (message.attachments.size === 0) {
       this.listAvatar(message);
-      if (this.config.deleteMessages){
-        message.delete();
-      }
       return;
     }
 
     if (message.attachments.size !== 1) {
       message.author.send(this.USAGE);
-      if (this.config.deleteMessages){
-        message.delete();
-      }
       return;
     }
 
-    this.user.setAvatar(message.attachments.first().url)
-             .catch(() => message.channel.send(this.localeService.t('commands.avatar.errors.tooFast')));
-             if (this.config.deleteMessages){
-              message.delete();
-            }
+    this.user
+      .setAvatar(message.attachments.first().url)
+      .catch(() => message.author.send(localize.t('commands.avatar.errors.tooFast')));
   }
 
   private listAvatar(message: Message) {
     if (this.user.avatarURL === null) {
       message.author.send(
-        this.localeService.t('commands.avatar.errors.noAvatar', { prefix: this.config.prefix }));
-        if (this.config.deleteMessages){
-          message.delete();
-        }
+        localize.t('commands.avatar.errors.noAvatar', { prefix: this.config.prefix })
+      );
       return;
     }
 
-    message.author.send(this.localeService.t('commands.avatar.url', { url: this.user.avatarURL }));
-    if (this.config.deleteMessages){
-      message.delete();
-    }
+    message.author.send(localize.t('commands.avatar.url', { url: this.user.avatarURL }));
   }
 }

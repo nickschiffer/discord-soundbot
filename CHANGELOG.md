@@ -1,10 +1,29 @@
-## Unreleased
+## 1.6.0 (2019-10-27)
 
-+ Allow adding additional commands
+**Features**
+
++ Allow adding additional commands when using the bot as a module
 + Added Dutch translation (Thank you [@nstapelbroek](https://github.com/nstapelbroek)!)
++ Added `!loop` command to easily queue a sound multiple times in a row
++ Added `!next` command which interrupts the current sound with a new one while keeping the queue
++ Added `!skip` command which allows skipping the current sound
++ Added `!exit` command which sets exit sounds akin to `!entrance`
++ Improved `!add` interface for adding from YouTube
 + Added `!set` alias for `!config` command
 + Added `!ping` command
 + Added a binary
+
+**Bugfixes**
+
++ Fixed handling of long help messages (Thanks [gruntzy](https://github.com/gruntzy)!)
++ Fixed trying to delete messages that were already manually deleted
++ Fixed overwriting of db values
+
+**Under the hood**
+
++ Replaced `tslint` with `eslint`
++ Added `prettier` and re-formatted all code
++ Do not rely on `config.example.json` file
 
 ## 1.5.1 (2019-02-01)
 
@@ -14,10 +33,14 @@
 
 ## 1.5.0 (2018-01-27)
 
+**Features**
+
 + Added `!entrance` command
 + Added possibility to specify a range when adding sound from YouTube
 + Added possibility to specifiy a tag for `!random`
 + Added Spanish translation (thanks [@ibito](https://github.com/ibito))
+
+**Bugfixes**
 
 + Improved Docker build (Thank you [@Shamus03](https://github.com/Shamus03)!)
 + Fixed a bug specific to Windows paths (Thank you [@ibito](https://github.com/ibito)!)

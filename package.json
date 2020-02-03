@@ -1,6 +1,6 @@
 {
   "name": "discord-soundbot",
-  "version": "1.6.0-dev",
+  "version": "1.7.0-dev",
   "description": "A Soundboard for Discord",
   "main": "dist/src/index.js",
   "bin": {
@@ -23,42 +23,55 @@
   "author": "Marko Kajzer",
   "license": "MIT",
   "dependencies": {
-    "awilix": "^4.1.0",
-    "discord.js": "^11.4.2",
-    "fluent-ffmpeg": "^2.1.2",
-    "i18n": "^0.8.3",
-    "lowdb": "^1.0.0",
-    "node-opus": "^0.2.7",
-    "ytdl-core": "^0.29.1"
+    "awilix": "4.2.2",
+    "discord.js": "11.5.1",
+    "fluent-ffmpeg": "2.1.2",
+    "i18n": "0.8.4",
+    "lodash": "4.17.15",
+    "lowdb": "1.0.0",
+    "node-opus": "0.3.3",
+    "replace-in-file": "4.2.0",
+    "ytdl-core": "1.0.7"
   },
   "optionalDependencies": {
-    "bufferutil": "^3.0.5",
+    "bufferutil": "4.0.1",
     "erlpack": "discordapp/erlpack",
-    "libsodium-wrappers": "^0.7.4"
+    "libsodium-wrappers": "0.7.6"
   },
   "devDependencies": {
-    "@types/fluent-ffmpeg": "^2.1.9",
-    "@types/glob": "^7.1.1",
-    "@types/i18n": "^0.8.3",
-    "@types/lowdb": "^1.0.6",
-    "@types/node": "^10.12.18",
-    "replace-in-file": "^3.4.2",
-    "tslint": "^5.9.1",
-    "tslint-consistent-codestyle": "^1.15.0",
-    "typescript": "^3.0.1"
+    "@types/fluent-ffmpeg": "2.1.11",
+    "@types/glob": "7.1.1",
+    "@types/i18n": "0.8.6",
+    "@types/jest": "24.0.21",
+    "@types/lowdb": "1.0.8",
+    "@types/node": "10.14.22",
+    "@typescript-eslint/eslint-plugin": "2.6.1",
+    "@typescript-eslint/parser": "2.6.1",
+    "eslint": "6.6.0",
+    "eslint-config-airbnb-base": "14.0.0",
+    "eslint-config-prettier": "6.5.0",
+    "eslint-plugin-import": "2.18.2",
+    "eslint-plugin-jest": "23.0.2",
+    "eslint-plugin-prettier": "3.1.1",
+    "jest": "24.9.0",
+    "prettier": "^1.19.1",
+    "ts-jest": "24.1.0",
+    "typescript": "3.7.2"
   },
   "engines": {
     "node": ">=8.0.0"
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "compile": "tsc -p tsconfig.json",
-    "build": "npm run compile",
-    "lint": "tslint -p tsconfig.json",
-    "postcompile": "node dist/lib/postbuild.js",
+    "build": "tsc -p tsconfig.json",
+    "format:check": "prettier --config .prettierrc.yml --ignore-path .prettierignore --list-different '**/**.ts'",
+    "format": "prettier --config .prettierrc.yml --ignore-path .prettierignore --write '**/**.ts'",
+    "lint": "eslint --rulesdir ./vendor/rules/ -c .eslintrc.yml --ext ts .",
+    "postbuild": "node dist/lib/postbuild.js",
     "serve": "node dist/bin/soundbot.js",
     "start": "npm run build && npm run serve",
+    "translate": "node dist/lib/checkTranslations.js",
     "rebuild": "npm run clean && npm run build",
-    "release": "npm run rebuild && npm run lint"
+    "release": "npm run rebuild && npm run lint && npm run format"
   }
 }

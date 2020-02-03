@@ -13,11 +13,19 @@
       "add": "Füge den beigefügten Sound hinzu",
       "play": "Spiele den angegebenen Sound",
       "combo": "Spiele Sounds in Reihe",
+      "loop": "Spiele den angegebenen Sound <count>-mal oder unendlich oft",
+      "skip": "überspringe den aktuellen Sound",
+      "next": "Unterbrich den aktuellen Sound mit einem Neuen",
       "random": "Spiele einen zufälligen Sound",
       "rename": "Benenne den angegebenen Sound",
       "remove": "Lösche den angegebenen Sound",
       "download": "Sende den angegebenen Sound in den Chat",
       "stop": "Hör auf zu spielen"
+    },
+
+    "entrance": {
+      "set": "Spiele den angegebenen Sound, wenn du einem Channel beitrittst",
+      "remove": "Entferne Eingangssound"
     },
 
     "tags": {
@@ -38,7 +46,7 @@
 
   "helpers": {
     "messageChunker": {
-      "page": "```Seite {current} von {amount}```"
+      "page": "```Seite {current} von {total}```"
     },
     "userFinder": {
       "error": "Benutzer konnte auf dem Server nicht gefunden werden."

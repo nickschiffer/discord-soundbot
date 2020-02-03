@@ -38,7 +38,7 @@
 
   "helpers": {
     "messageChunker": {
-      "page": "```Oldal: {current}/{amount}```"
+      "page": "```Oldal: {current}/{total}```"
     },
     "userFinder": {
       "error": "Felhasználó nem található a szerveren."
@@ -73,8 +73,8 @@
       "url": "Current avatar: {url}"
     },
     "ignore": {
-      "ignore": "{user} Figyelmenkívülhagyása",
-      "unignore": "{user} Nincs tovább figyelmenkívülhagyva!"
+      "add": "{user} Figyelmenkívülhagyása",
+      "remove": "{user} Nincs tovább figyelmenkívülhagyva!"
     },
     "remove": {
       "notFound": "{sound} nem taláható.",

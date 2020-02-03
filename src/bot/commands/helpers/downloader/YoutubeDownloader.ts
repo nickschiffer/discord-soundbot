@@ -1,17 +1,18 @@
+import fs from 'fs';
+
 import { Message } from 'discord.js';
 import ffmpeg from 'fluent-ffmpeg';
-import fs from 'fs';
 import ytdl from 'ytdl-core';
 
-import LocaleService from '@util/i18n/LocaleService';
+import localize from '@util/i18n/localize';
 import BaseDownloader from './BaseDownloader';
 import YoutubeValidator from './validator/YoutubeValidator';
 
 export default class YoutubeDownloader extends BaseDownloader {
   protected readonly validator: YoutubeValidator;
 
-  constructor(localeService: LocaleService, youtubeValidator: YoutubeValidator) {
-    super(localeService);
+  constructor(youtubeValidator: YoutubeValidator) {
+    super();
     this.validator = youtubeValidator;
   }
 
@@ -21,41 +22,43 @@ export default class YoutubeDownloader extends BaseDownloader {
 
     const [name, link, start, end] = params;
 
-    this.validator.validate(name, link)
-      .then(() => this.addSound(link, name, parseFloat(start), parseFloat(end)))
+    this.validator
+      .validate(name, link)
+      .then(() => this.addSound(link, name, start, end))
       .then(result => message.channel.send(result))
       .catch(result => message.channel.send(result));
   }
 
-  private addSound(url: string, filename: string, startTime: number, endTime: number) {
-    return this.makeRequest(url)
-      .then(() => this.convertToMp3(filename, startTime, endTime))
+  private addSound(
+    url: string,
+    filename: string,
+    startTime: string | undefined,
+    endTime: string | undefined
+  ) {
+    return this.download(url)
+      .then(() => this.convert(filename, startTime, endTime))
+      .then(() => this.cleanUp(filename))
       .catch(this.handleError);
   }
 
-  private makeRequest(url: string) {
+  private download(url: string) {
     return new Promise((resolve, reject) => {
-      ytdl(url, { filter: format => format.container === 'mp4'})
+      ytdl(url, { filter: format => format.container === 'mp4' })
         .pipe(fs.createWriteStream('tmp.mp4'))
         .on('finish', resolve)
         .on('error', reject);
     });
   }
 
-  private convertToMp3(name: string, startTime: number, endTime: number) {
-    return this.convertWithFfmpeg(name, startTime, endTime)
-      .then(() => this.cleanUp(name))
-      .catch(this.handleError);
-  }
-
-  private convertWithFfmpeg(name: string, startTime: number, endTime: number) {
+  private convert(name: string, startTime: string | undefined, endTime: string | undefined) {
     let ffmpegCommand = ffmpeg('tmp.mp4');
-    if (startTime >= 0) ffmpegCommand = ffmpegCommand.setStartTime(startTime);
-    if (endTime >= startTime) ffmpegCommand = ffmpegCommand.setDuration(endTime - startTime);
-    ffmpegCommand = ffmpegCommand.output(`./sounds/${name}.mp3`);
+
+    if (startTime) ffmpegCommand = ffmpegCommand.setStartTime(startTime);
+    if (endTime) ffmpegCommand = ffmpegCommand.setDuration(endTime);
 
     return new Promise((resolve, reject) => {
       ffmpegCommand
+        .output(`./sounds/${name}.mp3`)
         .on('end', resolve)
         .on('error', reject)
         .run();
@@ -64,11 +67,11 @@ export default class YoutubeDownloader extends BaseDownloader {
 
   private cleanUp(name: string) {
     fs.unlinkSync('tmp.mp4');
-    return Promise.resolve(this.localeService.t('commands.add.success', { name }));
+    return Promise.resolve(localize.t('commands.add.success', { name }));
   }
 
   private handleError(error: Error) {
     console.error(error);
-    return Promise.reject(this.localeService.t('commands.add.error'));
+    return Promise.reject(localize.t('commands.add.error'));
   }
 }
